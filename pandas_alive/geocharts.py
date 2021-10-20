@@ -254,13 +254,9 @@ class MapChart(_BaseChart):
                     s = self.period_fmt.format(x=idx_val)
             else:
                 s = self.df.columns.astype(str)[i]
-            num_texts = len(self.ax.texts)
-            if num_texts == 0:
-                # first frame
-                self.ax.text(
-                    s=s,
-                    transform=self.ax.transAxes,
-                    **self.get_period_label(self.period_label),
-                )
-            else:
-                self.ax.texts[0].set_text(s)
+            
+            self.ax.text(
+                s=s,
+                transform=self.ax.transAxes,
+                **self.get_period_label(self.period_label),
+            )
