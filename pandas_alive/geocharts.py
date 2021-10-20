@@ -94,6 +94,9 @@ class MapChart(_BaseChart):
             self.setup_progress_bar()
 
         self.df = temp_gdf
+        
+        self.kwargs_without_legend = self.kwargs.copy()
+        self.kwargs_without_legend.pop("legend", None)
 
     def get_data_cols(self, gdf: geopandas.GeoDataFrame) -> typing.List:
         """
@@ -179,7 +182,8 @@ class MapChart(_BaseChart):
             else None,
             # cmap='Blues',
             cmap=self.cmap,
-            **self.kwargs,
+            # If the user passes "legend=True", only apply to first frame.
+            **(self.kwargs if i==0 else self.kwargs_without_legend),
         )
 
         if self.basemap_format:
