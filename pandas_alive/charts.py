@@ -211,20 +211,26 @@ class BarChartRace(_BaseChart):
         # if self.title:
         # fig.tight_layout(rect=[0, 0, 1, 0.9])  # To include title
         ax = fig.add_subplot()
-        fake_cols = [chr(i + 70) for i in range(self.df.shape[1])]
+        fake_cols = [chr(i + 70) for i in range(self.n_visible)]
 
         max_val = self.df.max().max()
         if self.orientation == "h":
-            ax.barh(fake_cols, [1] * self.df.shape[1])
+            ax.barh(fake_cols, [1] * len(fake_cols))
             self.extracted_from_calculate_new_figsize_15(ax, 0, "y", fig, io)
             orig_pos = ax.get_position()
-            ax.set_yticklabels(self.df.columns)
+            # Before the tick labels are set, convince matplotlib not to throw user warning about FixedLocator and FixedFormatter
+            # Inspired by https://github.com/matplotlib/matplotlib/issues/18848#issuecomment-817098738
+            ax.set_xticks(ax.get_xticks())
+            ax.set_yticks(ax.get_yticks())
+            ax.set_yticklabels(self.df.columns[:len(fake_cols)])
             ax.set_xticklabels([max_val] * len(ax.get_xticks()))
         else:
-            ax.bar(fake_cols, [1] * self.df.shape[1])
+            ax.bar(fake_cols, [1] * len(fake_cols))
             self.extracted_from_calculate_new_figsize_15(ax, 30, "x", fig, io)
             orig_pos = ax.get_position()
-            ax.set_xticklabels(self.df.columns, ha="right")
+            ax.set_xticks(ax.get_xticks())
+            ax.set_yticks(ax.get_yticks())
+            ax.set_xticklabels(self.df.columns[:len(fake_cols)], ha="right")
             ax.set_yticklabels([max_val] * len(ax.get_yticks()))
 
         fig.canvas.print_figure(io.BytesIO(), format="png")
